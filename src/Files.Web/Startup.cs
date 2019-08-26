@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Files.Web
 {
-    public class Startup
+	public class Startup
 	{
 		public Startup(IConfiguration configuration)
 		{
