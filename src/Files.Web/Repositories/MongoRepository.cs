@@ -152,7 +152,8 @@ namespace Files.Web.Repositories
 			var settings = new MongoClientSettings
 			{
 				Servers = mongoAddress.Split(",", StringSplitOptions.RemoveEmptyEntries)
-					.Select(MongoServerAddress.Parse)
+					.Select(address => address.Split(":", StringSplitOptions.RemoveEmptyEntries))
+					.Select(addressParts => new MongoServerAddress(addressParts[0], addressParts.Length == 2 ? int.Parse(addressParts[1]) : 27017))
 					.ToArray(),
 			};
 
