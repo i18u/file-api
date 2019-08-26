@@ -27,6 +27,9 @@ namespace Files.Web.Repositories
 		/// </summary>
 		public const int MaxItems = 250;
 
+		/// <summary>
+		/// The string for the admin database
+		/// </summary>
 		public const string AdminDatabase = "admin";
 
 		private Lazy<IMongoClient> _client = new Lazy<IMongoClient>(GetClient);
@@ -83,6 +86,11 @@ namespace Files.Web.Repositories
 				.ToEnumerable();
 		}
 
+		/// <summary>
+		/// Inserts the given <see cref="TModel"/> into the mongo database.
+		/// </summary>
+		/// <param name="model">The entity to insert.</param>
+		/// <returns>The unique id of the inserted entity.</returns>
 		public ObjectId Insert(TModel model)
 		{
 			if (model == null)
@@ -118,6 +126,10 @@ namespace Files.Web.Repositories
 			return upsertResult.UpsertedId.AsObjectId;
 		}
 
+		/// <summary>
+		/// Deletes the specific <see cref="TModel"/>  from mongo.
+		/// </summary>
+		/// <param name="id">The unique id of the entity to delete.</param>
 		public void Delete(ObjectId id)
 		{
 			var filter = Builders<TModel>.Filter.Eq(document => document.Id, id);
