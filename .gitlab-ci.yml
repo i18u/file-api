@@ -1,0 +1,36 @@
+stages:
+  - build
+  - test
+  - publish
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build:
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker build . --tag=cookbook-file-api
+    - mkdir out
+    - docker save cookbook-file-api > out/cookbook-file-api.tar
+  artifacts:
+    paths:
+      - out
+
+publish:
+  stage: publish
+  dependencies:
+    - build
+  only:
+    - tags
+  tags:
+    - docker
+  script:
+    - docker load -i out/cookbook-file-api.tar
+    # tag
+    - docker tag cookbook-file-api $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    # latest
+    - docker tag cookbook-file-api $CI_REGISTRY_IMAGE
+    - docker push $CI_REGISTRY_IMAGE
